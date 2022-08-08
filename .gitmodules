@@ -1,0 +1,8 @@
+[submodule "/Users/jhh/git/heusalagroup/hgrs/src/fi/hg/core"]
+	path = /Users/jhh/git/heusalagroup/hgrs/src/fi/hg/core
+	url = git@github.com:heusalagroup/fi.hg.core.git
+	branch = main
+[submodule "/Users/jhh/git/heusalagroup/hgrs/src/fi/hg/backend"]
+	path = /Users/jhh/git/heusalagroup/hgrs/src/fi/hg/backend
+	url = git@github.com:heusalagroup/fi.hg.backend.git
+	branch = main
