@@ -1,0 +1,8 @@
+[submodule "backend/src/fi/hg/core"]
+	path = backend/src/fi/hg/core
+	url = git@github.com:heusalagroup/fi.hg.core.git
+	branch = main
+[submodule "backend/src/fi/hg/backend"]
+	path = backend/src/fi/hg/backend
+	url = git@github.com:heusalagroup/fi.hg.backend.git
+	branch = main

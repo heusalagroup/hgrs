@@ -5,7 +5,7 @@ services:
     build: .
     environment:
       BACKEND_LOG_LEVEL: DEBUG
-      BACKEND_URL: "http://0.0.0.0:3500"
+      BACKEND_URL: "http://0.0.0.0:8001"
 
     ports:
-    - "3500:3500"
+    - "8001:8001"
