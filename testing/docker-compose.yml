@@ -1,0 +1,20 @@
+version: '3.1'
+
+services:
+
+  hgrs-testing-hgrs:
+    container_name: hgrs-testing-hgrs
+    hostname: hgrs-testing-hgrs
+    restart: always
+    build: ./io/hgrs
+    environment:
+      PORT: "8001"
+      BACKEND_LOG_LEVEL: DEBUG
+      BACKEND_URL: "http://0.0.0.0:8001"
+      BACKEND_PUBLIC_URL: "http://localhost:8001"
+      BACKEND_HOSTNAME: "localhost"
+      BACKEND_INITIAL_USERS: "app:p4sSw0rd123;app2:p4sSw0rd456"
+      BACKEND_EMAIL_CONFIG: "smtp://hgrs-testing-smtp:1025"
+      BACKEND_JWT_SECRET: "HyztBRx6pLpsmVCewATv8TctTTtEHrPz"
+    ports:
+    - "8001:8001"
