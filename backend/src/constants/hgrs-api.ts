@@ -79,7 +79,7 @@ export const HGRS_API_GET_ITEM_ID = "id";
 /**
  * `DELETE /my/items`
  */
-export const HGRS_API_DELETE_MY_ITEM_LIST_PATH = "/item";
+export const HGRS_API_DELETE_ITEM_PATH = "/{service}/item";
 
 function q(value: string): string {
     return encodeURIComponent(value);

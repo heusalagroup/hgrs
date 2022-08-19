@@ -23,7 +23,8 @@ import {
     HGRS_API_VERIFY_EMAIL_TOKEN_PATH,
     HGRS_API_INDEX_PATH,
     HGRS_API_GET_MY_ITEM_ID,
-    HGRS_API_DELETE_MY_ITEM_LIST_PATH,
+    HGRS_API_DELETE_ITEM_PATH,
+    //HGRS_API_DELETE_MY_ITEM_LIST_PATH,
     HGRS_API_UPDATE_MY_ITEM_PATH,
     HGRS_API_GET_ITEM_ID,
     VALID_ADMIN_DOMAINS
@@ -127,7 +128,7 @@ export class BackendController {
 
 
     /**
-     * GET SOME
+     * GET SOME EI TOIMI
      * @param idListString
      * Returns a list of something http://localhost:3000/items?idListString="f99df4
      */
@@ -194,7 +195,6 @@ export class BackendController {
     * Item creation
     *
     * @param token
-    * @param parentIdString?
     * @param body
     */
     @PostMapping(HGRS_API_POST_MY_ITEM_PATH)
@@ -271,10 +271,9 @@ export class BackendController {
     }
 
     /**
-    * Returns by ID
+    * Returns by item ID
     *
     * @param token
-    * @param parentIdString
     * @param idString
     * http://localhost:3000/c/item?idString=820e0...
     */
@@ -284,9 +283,6 @@ export class BackendController {
             required: false
         })
         token: string,
-        //@PathVariable(HGRS_API_GET_ITEM_ID, { required: true })
-        //idString: string,
-        //@RequestParam(HgrsQueryParam.ID_LIST, RequestParamValueType.STRING)
         @RequestParam('idString', RequestParamValueType.STRING)
         idString: string
     ): Promise<any | ResponseEntity<ErrorDTO>> {
@@ -335,7 +331,7 @@ export class BackendController {
     }
 
     /**
-    * Returns by ID
+    * Returns by property and value
     *
     * @param token
     * @param parentIdString
@@ -463,6 +459,57 @@ export class BackendController {
 
         } catch (err) {
             LOG.error(`findByIdAndUpdate: ERROR: `, err);
+            return ResponseEntity.internalServerError<ErrorDTO>().body(
+                createErrorDTO('Internal Server Error', 500)
+            );
+        }
+    }
+
+    /**
+    * Item deletion 
+    *
+    * @param token
+    */
+    @DeleteMapping(HGRS_API_DELETE_ITEM_PATH)
+    public static async deleteById(
+        @RequestHeader(HGRS_AUTHORIZATION_HEADER_NAME, {
+            required: false //true
+        })
+        token: string,
+        @RequestParam('idString', RequestParamValueType.STRING)
+        idString: string
+    ): Promise<ResponseEntity<void | ErrorDTO>> {
+        try {
+
+            /*  if (!token) {
+                  LOG.warn(`Warning! No authentication token provided in deleteWorkspaces`);
+                  return ResponseEntity.internalServerError<ErrorDTO>().body(
+                      createErrorDTO('Access denied', 403)
+                  );
+              }
+  
+              const email: string | undefined = JwtService.decodePayloadSubject(token);
+              if (!email) {
+                  LOG.warn(`Warning! Token did not have an email address in deleteWorkspaces.`, token);
+                  return ResponseEntity.internalServerError<ErrorDTO>().body(
+                      createErrorDTO('Access denied', 403)
+                  );
+              }
+  
+              if (!this._emailTokenService.verifyToken(email, token, true)) {
+                  LOG.debug(`deleteWorkspaces: Access denied for email: `, email, token);
+                  return ResponseEntity.internalServerError<ErrorDTO>().body(
+                      createErrorDTO('Access denied', 403)
+                  );
+              }*/
+            const itemId: string = trim(idString ?? '');
+            LOG.debug(`deleteById: itemId: `, itemId);
+
+
+            await this._reposityServer.deleteById(itemId);
+
+        } catch (err) {
+            LOG.error(`delete item: ERROR: `, err);
             return ResponseEntity.internalServerError<ErrorDTO>().body(
                 createErrorDTO('Internal Server Error', 500)
             );

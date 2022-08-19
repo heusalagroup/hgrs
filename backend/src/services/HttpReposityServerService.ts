@@ -145,10 +145,9 @@ export class HttpReposityServerService implements Repository<any>{
         return HttpReposityServerService._prepareItem(updatedItem);
     }
 
-
-
-
-
+    public async deleteById(id: string): Promise<RepositoryEntry<any>> {
+        return await this._repository.deleteById(id);
+    }
 
 
 
@@ -202,6 +201,8 @@ export class HttpReposityServerService implements Repository<any>{
 
 
 
+
+
     findByProperty(propertyName: string, propertyValue: any): Promise<RepositoryEntry<any>> {
         throw new Error("Method not implemented.");
     }
@@ -213,9 +214,7 @@ export class HttpReposityServerService implements Repository<any>{
         //throw new Error("Method not implemented.");
         return 
     }*/
-    deleteById(id: string): Promise<RepositoryEntry<any>> {
-        throw new Error("Method not implemented.");
-    }
+
     deleteByIdList(list: readonly string[]): Promise<readonly RepositoryEntry<any>[]> {
         throw new Error("Method not implemented.");
     }
