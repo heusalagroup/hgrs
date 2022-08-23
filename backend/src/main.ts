@@ -25,6 +25,7 @@ import { BackendController } from "./controllers/BackendController";
 import { RequestRouter } from "./fi/hg/core/requestServer/RequestRouter";
 import { Headers } from "./fi/hg/core/request/Headers";
 import { BUILD_USAGE_URL, BUILD_WITH_FULL_USAGE } from "./constants/build";
+import { HttpReposityServerService } from "./services/HttpReposityServerService";
 
 const LOG = LogService.createLogger('main');
 
@@ -39,6 +40,8 @@ export async function main (
         RequestClient.setLogLevel(LogLevel.INFO);
         RequestServer.setLogLevel(LogLevel.INFO);
 
+        HttpReposityServerService.setLogLevel(LogLevel.DEBUG);
+
         LOG.debug(`Loglevel as ${LogService.getLogLevelString()}`);
 
         const {scriptName, parseStatus, exitStatus, errorString} = CommandArgumentUtils.parseArguments(BACKEND_SCRIPT_NAME, args);
@@ -52,6 +55,13 @@ export async function main (
             console.error(`ERROR: ${errorString}`);
             return exitStatus;
         }
+
+        const httpServerService = new HttpReposityServerService(
+        );
+
+        await httpServerService.initialize();
+
+        BackendController.setReposityServer(httpServerService);
 
         const server = new RequestServer(BACKEND_URL);
         server.attachController(BackendController);
