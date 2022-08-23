@@ -131,6 +131,18 @@ export class HttpReposityServerService implements Repository<any>{
         return HttpReposityServerService._prepareItem(item);
     }
 
+    public async waitById(id: string, includeMembers?: boolean, timeout?: number): Promise<RepositoryEntry<any>> {
+        const item = await this._repository.waitById(id, includeMembers ? includeMembers : false, timeout ? timeout : undefined);
+        return HttpReposityServerService._prepareItem(item);
+    }
+
+
+    public async findByProperty(propertyName: string, propertyValue: any): Promise<RepositoryEntry<any> | undefined> {
+        const item = await this._repository.findByProperty(propertyName, propertyValue);
+        return HttpReposityServerService._prepareItem(item);
+        //return item;
+    }
+
     public async getAllByProperty(propertyName: string, propertyValue: any): Promise<readonly RepositoryEntry<any>[]> {
         const list: readonly RepositoryEntry<StoredRepositoryItem>[] = await this._getAllByProperty(propertyName, propertyValue);
         /*return map(list, (item: RepositoryEntry<StoredRepositoryItem>): RepositoryEntry<any> => {
@@ -144,6 +156,13 @@ export class HttpReposityServerService implements Repository<any>{
         const updatedItem = await this._repository.findByIdAndUpdate(id, item);
         return HttpReposityServerService._prepareItem(updatedItem);
     }
+
+    public async update(id: string, data: any): Promise<RepositoryEntry<any>> {
+        const updatedItem = await this._repository.update(id, data);
+        return HttpReposityServerService._prepareItem(updatedItem);
+    }
+
+
 
     public async deleteById(id: string): Promise<RepositoryEntry<any>> {
         return await this._repository.deleteById(id);
@@ -160,9 +179,6 @@ export class HttpReposityServerService implements Repository<any>{
     }
 
 
-    waitById(id: string, includeMembers?: boolean, timeout?: number): Promise<RepositoryEntry<any>> {
-        throw new Error("Method not implemented.");
-    }
 
     /*private static _prepareItem(item: RepositoryItem<any>): Repository<any> {
 
@@ -185,6 +201,7 @@ export class HttpReposityServerService implements Repository<any>{
         return await this._repository.getAllByProperty(propertyName, propertyValue);
     }
 
+
     private async _getSome(
         idList: readonly string[]
     ): Promise<readonly RepositoryEntry<StoredRepositoryItem>[]> {
@@ -200,16 +217,6 @@ export class HttpReposityServerService implements Repository<any>{
 
 
 
-
-
-
-    findByProperty(propertyName: string, propertyValue: any): Promise<RepositoryEntry<any>> {
-        throw new Error("Method not implemented.");
-    }
-
-    update(id: string, data: any): Promise<RepositoryEntry<any>> {
-        throw new Error("Method not implemented.");
-    }
     /*private async updateOrCreateItem(item: any): Promise<RepositoryEntry<any>> {
         //throw new Error("Method not implemented.");
         return 

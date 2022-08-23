@@ -55,11 +55,18 @@ export const HGRS_API_POST_MY_ITEM_PATH = "/item";
  * `GET /my/items` + idListStrig[], getSome(), 
  */
 export const HGRS_API_GET_MY_ITEM_LIST_PATH = "/{service}/items"; //
-
 /**
  * `GET /my/items/property` + propertyName, propertyValue getAllByProperty(), 
  */
 export const HGRS_API_GET_MY_ITEM_PROPERTY_LIST_PATH = "{service}/items/property";
+/**
+ * `GET /my/item/property` + propertyName, propertyValue findByProperty(),
+ */
+export const HGRS_API_GET_MY_ITEM_PROPERTY_PATH = "{service}/item/property"
+/**
+ * `GET /my/item/wait` +  id, includeMembers, timeout, waitById
+ */
+export const HGRS_API_GET_MY_WAIT_ITEM_PATH = "{service}/item/wait"
 /**
  * `GET /my/items/` getAll, 
  */
@@ -72,6 +79,7 @@ export const HGRS_API_GET_MY_ITEM_PATH = "/{service}/item";
  * `POST /my/item/{id}` findByIdAndUpdate path
  */
 export const HGRS_API_UPDATE_MY_ITEM_PATH = "/{service}/item/{id}";
+export const HGRS_API_ITEM_UPDATE_PATH = "/{service}/item/update/{id}";
 /**
  * `id`
  */

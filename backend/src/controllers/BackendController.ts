@@ -17,8 +17,10 @@ import {
     HGRS_API_GET_MY_ITEM_LIST_PATH,
     HGRS_API_GET_MY_ITEM_ALL_LIST_PATH,
     HGRS_API_GET_MY_ITEM_PROPERTY_LIST_PATH,
+    HGRS_API_GET_MY_ITEM_PROPERTY_PATH,
     //HGRS_API_UPDATE_MY_WORKSPACE_USER_USER_ID,
     HGRS_API_POST_MY_ITEM_PATH,
+    HGRS_API_GET_MY_WAIT_ITEM_PATH,
     HGRS_API_VERIFY_EMAIL_CODE_PATH,
     HGRS_API_VERIFY_EMAIL_TOKEN_PATH,
     HGRS_API_INDEX_PATH,
@@ -26,6 +28,7 @@ import {
     HGRS_API_DELETE_ITEM_PATH,
     //HGRS_API_DELETE_MY_ITEM_LIST_PATH,
     HGRS_API_UPDATE_MY_ITEM_PATH,
+    HGRS_API_ITEM_UPDATE_PATH,
     HGRS_API_GET_ITEM_ID,
     VALID_ADMIN_DOMAINS
 } from "../constants/hgrs-api";
@@ -331,6 +334,76 @@ export class BackendController {
     }
 
     /**
+   * Returns by item ID
+   *
+   * @param token
+   * @param idString
+   * http://localhost:3000/c/item?idString=a08191b1d81acdd6397ddca847aa71070e79a2f4&membersBoolean=true&timeoutNumber=100
+   */
+    @GetMapping(HGRS_API_GET_MY_WAIT_ITEM_PATH)
+    public static async waitById(
+        @RequestHeader(HGRS_AUTHORIZATION_HEADER_NAME, {
+            required: false
+        })
+        token: string,
+        @RequestParam('idString', RequestParamValueType.STRING)
+        idString: string,
+        @RequestParam('membersBoolean', RequestParamValueType.STRING)
+        membersBoolean: boolean,
+        @RequestParam('timeoutNumber', RequestParamValueType.NUMBER)
+        timeoutNumber: number,
+    ): Promise<any | ResponseEntity<ErrorDTO>> {
+        try {
+
+            /*  if ( !token ) {
+                  LOG.warn(`Warning! No authentication token provided in getMyUserById.`);
+                  return ResponseEntity.internalServerError<ErrorDTO>().body(
+                      createErrorDTO('Access denied', 403)
+                  );
+              }*/
+
+            //const workspaceId: string = trim(parentIdString ?? '');
+            const itemId: string = trim(idString ?? '');
+            const members: boolean = membersBoolean ? membersBoolean : false;
+            const timeout: number = timeoutNumber ? timeoutNumber : undefined;
+
+            console.log("WAITByID");
+
+
+            /*  const email: string | undefined = JwtService.decodePayloadSubject(token);
+              if ( !email ) {
+                  LOG.warn(`Warning! Token did not have an email address in getMyUserById.`, token);
+                  return ResponseEntity.internalServerError<ErrorDTO>().body(
+                      createErrorDTO('Access denied', 403)
+                  );
+              }
+  
+              if ( !this._emailTokenService.verifyToken(email, token, true) ) {
+                  LOG.debug(`getMyUserById: Access denied for email: `, email, token);
+                  return ResponseEntity.internalServerError<ErrorDTO>().body(
+                      createErrorDTO('Access denied', 403)
+                  );
+              }*/
+
+            const result = await this._reposityServer.waitById(itemId, members, timeout);
+
+            if (!result) {
+                return ResponseEntity.notFound<ErrorDTO>().body(
+                    createErrorDTO('Not Found', 404)
+                );
+            }
+            return result;
+
+        } catch (err) {
+            LOG.error(`findById: ERROR: `, err);
+            return ResponseEntity.internalServerError<ErrorDTO>().body(
+                createErrorDTO('Internal Server Error', 500)
+            );
+        }
+    }
+
+
+    /**
     * Returns by property and value
     *
     * @param token
@@ -396,6 +469,70 @@ export class BackendController {
     }
 
     /**
+   * Returns by item ID
+   *
+   * @param token
+   * @param idString
+   * http://localhost:3000/c/item/property?property=target&propertyString=unique
+   */
+    @GetMapping(HGRS_API_GET_MY_ITEM_PROPERTY_PATH)
+    public static async findByProperty(
+        @RequestHeader(HGRS_AUTHORIZATION_HEADER_NAME, {
+            required: false
+        })
+        token: string,
+        @RequestParam('property', RequestParamValueType.STRING)
+        property: string,
+        @RequestParam('propertyString', RequestParamValueType.STRING)
+        propertyString: string
+    ): Promise<any | ResponseEntity<ErrorDTO>> {
+        try {
+
+            /*  if ( !token ) {
+                  LOG.warn(`Warning! No authentication token provided in getMyUserById.`);
+                  return ResponseEntity.internalServerError<ErrorDTO>().body(
+                      createErrorDTO('Access denied', 403)
+                  );
+              }*/
+
+            //const workspaceId: string = trim(parentIdString ?? '');
+            const propertyName: string = trim(property ?? '');
+            const propertyValue: string = trim(propertyString ?? '');
+
+            console.log("findByProperty ")
+            /*  const email: string | undefined = JwtService.decodePayloadSubject(token);
+              if ( !email ) {
+                  LOG.warn(`Warning! Token did not have an email address in getMyUserById.`, token);
+                  return ResponseEntity.internalServerError<ErrorDTO>().body(
+                      createErrorDTO('Access denied', 403)
+                  );
+              }
+  
+              if ( !this._emailTokenService.verifyToken(email, token, true) ) {
+                  LOG.debug(`getMyUserById: Access denied for email: `, email, token);
+                  return ResponseEntity.internalServerError<ErrorDTO>().body(
+                      createErrorDTO('Access denied', 403)
+                  );
+              }*/
+
+            const result = await this._reposityServer.findByProperty(propertyName, propertyValue);
+
+            if (!result) {
+                return ResponseEntity.notFound<ErrorDTO>().body(
+                    createErrorDTO('Not Found', 404)
+                );
+            }
+            return result;
+
+        } catch (err) {
+            LOG.error(`findById: ERROR: `, err);
+            return ResponseEntity.internalServerError<ErrorDTO>().body(
+                createErrorDTO('Internal Server Error', 500)
+            );
+        }
+    }
+
+    /**
      * Updates a item by ID
      * http://localhost:3000/c/item/84944d2d8fd1464654ab7f40391ba5270dc2de6f
      *
@@ -453,6 +590,76 @@ export class BackendController {
 
 
             return await this._reposityServer.findByIdAndUpdate(
+                itemId,
+                body
+            );
+
+        } catch (err) {
+            LOG.error(`findByIdAndUpdate: ERROR: `, err);
+            return ResponseEntity.internalServerError<ErrorDTO>().body(
+                createErrorDTO('Internal Server Error', 500)
+            );
+        }
+    }
+
+    /**
+     * Updates a item by ID
+     * http://localhost:3000/c/item/update/cec92700cc69c31f46dbd00a6847d9d607a9d826
+     *
+     * @param token
+     * @param idString
+     * @param body
+     */
+    @PostMapping(HGRS_API_ITEM_UPDATE_PATH)
+    public static async update(
+        @RequestHeader(HGRS_AUTHORIZATION_HEADER_NAME, {
+            required: false //true oikeasti
+        })
+        token: string,
+        //@PathVariable(DASHBOARD_API_UPDATE_MY_WORKSPACE_USER_WORKSPACE_ID, { required: true })
+        //parentIdString: string,
+        @PathVariable(HGRS_API_GET_ITEM_ID, { required: true })
+        idString: string,
+        @RequestBody
+        body: ReadonlyJsonObject
+    ): Promise<any | ResponseEntity<ErrorDTO>> {
+        try {
+
+            /* if (!isPartial?(body)) {
+                 LOG.debug(`updateMyUserById: Not Partial<User> body: `, body);
+                 return ResponseEntity.badRequest<ErrorDTO>().body(
+                     createErrorDTO('Bad Request', 400)
+                 );
+             }*/
+
+            /* if (!token) {
+                 LOG.warn(`Warning! No authentication token provided in updateMyUserById`);
+                 return ResponseEntity.internalServerError<ErrorDTO>().body(
+                     createErrorDTO('Access denied', 403)
+                 );
+             }*/
+
+            const itemId: string = trim(idString ?? '');
+            LOG.debug(`update: itemId: `, itemId);
+
+
+            /* const email: string | undefined = JwtService.decodePayloadSubject(token);
+             if (!email) {
+                 LOG.warn(`Warning! Token did not have an email address in updateMyUserById.`, token);
+                 return ResponseEntity.internalServerError<ErrorDTO>().body(
+                     createErrorDTO('Access denied', 403)
+                 );
+             }
+ 
+             if (!this._emailTokenService.verifyToken(email, token, true)) {
+                 LOG.debug(`updateMyUserById: Access denied for email: `, email, token);
+                 return ResponseEntity.internalServerError<ErrorDTO>().body(
+                     createErrorDTO('Access denied', 403)
+                 );
+             }*/
+
+
+            return await this._reposityServer.update(
                 itemId,
                 body
             );
